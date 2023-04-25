@@ -1,0 +1,25 @@
+- name: Playbook.yml
+  hosts: all
+  connection: local
+  tasks:
+    - name: Find
+      run_once: true
+      ansible.builtin.find:
+        paths:
+          - ./files
+        patterns:
+          - files*
+      register: reg_find
+
+    - name:
+      debug:
+        msg:
+          - "{{ (reg_find.files | map (attribute='path')) }}"
+          - "{{ groups['all'].index(ansible_host) }}"
+
+    - name:
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      loop:
+        - ls
+        - echo
